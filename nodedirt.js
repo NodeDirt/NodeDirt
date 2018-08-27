@@ -2,38 +2,76 @@
 
 // START SECTION: SYSTEM
 
+// START SUB: Variables
+/* START */
+try {	
+	var sys = require('util');
+	var exec = require('child_process').exec;
+	var cluster = require('cluster');
+	var os = require('os');
+	var systemOS = os.platform();
+	var prettySize = require('prettysize');
+	var prettyMs = require('pretty-ms');
+	var ffmpeg = require('fluent-ffmpeg');
+	var colors = require('colors');
+} catch(error) {
+	var fs = require('fs');
+	console.log(timeStampLog()+'Could not load a required package, exiting!'.bold.red);
+	fs.readFile('example.config.json', 'utf8', function (err,data) {
+		if (err) {
+			return console.log(err);
+		}
+		var result = data
+			.replace(/#!\/usr\/bin\/env node/g,
+				'# Welcome to the '+bot_nickname+' Documentation')
+			.replace(/\/\/ START SECTION: /g,
+				'## ')
+			.replace(/\/\/ END SECTION: (.+)/g,
+				'')
+			.replace(/\/\/ START SUB: /g,
+				'### ')
+			.replace(/\/\/ END SUB: (.+)/g,
+				'')
+			.replace(/\/\/ COMMENT: /g,
+				'')
+			.replace(/\/\* START \*\//g,
+				'```js')
+			.replace(/\/\* END \*\//g,
+				'```');
+		fs.writeFile('config.json', result, 'utf8', function (err) {
+			if (err) return console.log(err);
+		});
+	});
+	console.log(timeStampLog()+'Documentation generation done!'.bold.green);
+	process.exit();
+}
+/* END */
+// END SUB: Variables
+
 // START SUB: Constants
 /* START */
-const config = require('./config.json');
-const os = require('os');
-const fs = require('fs');
-const path = require('path');
-const express = require('express');
-const request = require("request");
-const http = require("http");
+try {
+	const config = require('./config.json');
+} catch(error) {
+	console.log(timeStampLog()+'No config.json found, exiting!'.bold.red);
+	process.exit();
+}
+try {
+	const fs = require('fs');
+	const path = require('path');
+	const express = require('express');
+	const request = require("request");
+	const http = require("http");
+	bot_nickname = "NodeDirt";
+	bot_web_port = config.bot_web_port;
+	bot_api_key = config.bot_api_key;
+} catch(error) {
+	console.log(timeStampLog()+'Could not load a required package, exiting!'.bold.red);
+	process.exit();
+}
+
 /* END */
 // END SUB: Constants
-
-// START SUB: Other Variables
-/* START */
-var sys = require('util');
-var exec = require('child_process').exec;
-var cluster = require('cluster');
-var systemOS = os.platform();
-var prettySize = require('prettysize');
-var prettyMs = require('pretty-ms');
-var ffmpeg = require('fluent-ffmpeg');
-var colors = require('colors');
-/* END */
-// END SUB: Other Variables
-
-// START SUB: Config Value Variables
-/* START */
-bot_nickname = "NodeDirt";
-bot_web_port = config.bot_web_port;
-bot_api_key = config.bot_api_key;
-/* END */
-// END SUB: Config Value Variables
 
 // END SECTION: SYSTEM
 
