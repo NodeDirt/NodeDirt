@@ -22,9 +22,9 @@ Windows, osX, Linux
 ### Requirements
 Python 2.7, Node.js 8+, NPM
 ### Installation
-1) `git clone https://github.com/nodefried-and-roy/alfred.git`
+1) `git clone https://github.com/nodedirt/nodedirt.git`
 2) `cd alfred; npm install -g`
-3) `node alfred.js` or just `alfred` (all OS's)
+3) `node nodedirt.js` or just `nodedirt` (all OS's)
 
 ## Documentation
 The documentation is [auto-generated](../master/DOCS.md).
