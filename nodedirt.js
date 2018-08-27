@@ -31,6 +31,7 @@ var colors = require('colors');
 /* START */
 bot_nickname = "NodeDirt";
 bot_web_port = config.bot_web_port;
+bot_api_key = config.bot_api_key;
 /* END */
 // END SUB: Config Value Variables
 
@@ -139,13 +140,7 @@ function botConsole() {
 				console.log(timeStampLog()+'Exiting back to console...');
 				process.exit();
 		} else if(arguments[0].toUpperCase() == "WEB") {
-			if(arguments[2].toUpperCase() == "START") {
-				console.log(timeStampLog()+'Starting the web server...');
-				webServer('start');
-			} else if (arguments[2].toUpperCase() == "STOP") {
-				console.log(timeStampLog()+'Stopping the web server...');
-				webServer('stop');
-			}
+			webServer(arguments[2]);
 		} else if(arguments[0].toUpperCase() == "PING") {
 			console.log(timeStampLog()+'Pinging host, please wait...');
 			let host = arguments[2];
@@ -169,15 +164,19 @@ function webServer(action) {
 	if (action.toUpperCase() == "START") {
 		const server = web.listen(bot_web_port);
 		web.get('/', (req,res) => {
-			res.send('Web server started successfully!');
+			res.send('Web server started successfully...');
 		});
-		web.get('/backend/close', (req,res) => {
+		web.get('/api/'+bot_api_key+'/close', (req,res) => {
 			server.close();
+		});
+		web.get('/api/'+bot_api_key+'/status', (req,res) => {
+			res.send('Web server IS online...');
 		});
 		console.log(timeStampLog()+'Web server started successfully!'.green);
 		botConsole();
 	} else if(action.toUpperCase() == "STOP") {
-		var webBackendClose = 'http:\/\/localhost:'+bot_web_port+'/backend/close';
+		var webBackendClose = 'http:\/\/localhost:'+bot_web_port+'/api/'+bot_api_key+'/close';
+		var webBackendStatus = 'http:\/\/localhost:'+bot_web_port+'/api/'+bot_api_key+'/status';
 		request({
 			url: webBackendClose,
 			timeout: 5000
@@ -185,7 +184,20 @@ function webServer(action) {
 			console.log(timeStampLog()+'Web server stopped successfully!'.red);
 			botConsole();
 		})
-	}
+	} else if(action.toUpperCase() == "STATUS") {
+                var webBackendStatus = 'http:\/\/localhost:'+bot_web_port+'/api/'+bot_api_key+'/status';
+                request({
+                        url: webBackendStatus,
+                        timeout: 1000
+                }, function (error,response,body) {
+			if (error) { 
+				console.log(timeStampLog()+'Web Server IS NOT online...'.bold.red);
+			} else {
+				console.log(timeStampLog()+'Web Server IS online...'.bold.green);
+			}
+                        botConsole();
+                })
+        }
 }
 /* END */
 // END SUB: Web Server
